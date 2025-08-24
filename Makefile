@@ -8,4 +8,4 @@ docker-build:
 	cd go-api && docker build -f Dockerfile -t go-api .
 
 docker-run:
-	docker compose up --build
+	cd go-api && docker compose up --build
