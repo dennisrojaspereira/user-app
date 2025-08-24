@@ -4,10 +4,12 @@ import (
 	"context"
 	h "createuserviper/go-api/internal/http"
 	"createuserviper/go-api/internal/storage"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
 
+	"github.com/segmentio/kafka-go"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
@@ -52,4 +54,16 @@ func main() {
 	srv := h.NewServer(store)
 	handler := otelhttp.NewHandler(srv.Router(), "go-api")
 	log.Fatal(http.ListenAndServe(":"+port, handler))
+}
+
+func sendLoginEventToKafka(userID, email, timestamp string) {
+	writer := kafka.NewWriter(kafka.WriterConfig{
+		Brokers: []string{os.Getenv("KAFKA_BOOTSTRAP_SERVERS")},
+		Topic:   "user-login",
+	})
+	defer writer.Close()
+	msg := kafka.Message{
+		Value: []byte(fmt.Sprintf(`{"userId":"%s","email":"%s","timestamp":"%s"}`, userID, email, timestamp)),
+	}
+	_ = writer.WriteMessages(context.Background(), msg)
 }
