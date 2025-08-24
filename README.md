@@ -1,25 +1,52 @@
-# CreateUserVIPER + Go API
+# User App - Go API
 
-## Structure
-- Swift Package (VIPER) under `Sources/CreateUser` with XCTest under `Tests/CreateUserTests`
-- Go API under `go-api` with unit tests and Dockerfile
-- `docker-compose.yml` to run the API
+## Estrutura do Projeto
+- API Go em `go-api/` (com testes unitários e Dockerfile)
+- `docker-compose.yml` para orquestração
 
-## Run Go API
+## Como subir a aplicação Go
+
+### Usando Docker Compose
 ```bash
 docker compose up --build
-# API at http://localhost:8080
-# POST /users  { "name": "...", "email": "..." }
-# GET  /users
-# GET  /users/{id}
-# GET  /health
 ```
+A API estará disponível em: http://localhost:8080
 
-## Run Go tests
+### Usando Makefile
 ```bash
-cd go-api
-go test ./...
+make run
 ```
 
-## Using from Swift
-Point your networking to `http://localhost:8080/users` for create.
+## Como rodar os testes Go
+```bash
+make test
+```
+
+## Endpoints principais
+- `POST /users`  `{ "name": "...", "email": "..." }`
+- `GET /users`
+- `GET /users/{id}`
+- `GET /health`
+
+## Requisitos
+- Go instalado
+- Docker instalado
+
+---
+
+# Makefile exemplo
+
+```makefile
+run:
+	cd go-api && go run main.go
+
+test:
+	cd go-api && go test ./...
+
+docker-build:
+	cd go-api && docker build -f Dockerfile -t go-api .
+
+docker-run:
+	docker compose up --build
+```
+
