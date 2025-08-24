@@ -1,11 +1,19 @@
 package main
 
 import (
+	"context"
 	h "createuserviper/go-api/internal/http"
 	"createuserviper/go-api/internal/storage"
 	"log"
 	"net/http"
 	"os"
+
+	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp"
+	"go.opentelemetry.io/otel/sdk/resource"
+	"go.opentelemetry.io/otel/sdk/trace"
 )
 
 func main() {
@@ -24,6 +32,24 @@ func main() {
 	} else {
 		store = storage.NewMemoryStore()
 	}
+
+	// OpenTelemetry setup
+	ctx := context.Background()
+	exporter, err := otlptracehttp.New(ctx)
+	if err != nil {
+		log.Fatalf("Failed to create OTLP exporter: %v", err)
+	}
+	tp := trace.NewTracerProvider(
+		trace.WithBatcher(exporter),
+		trace.WithResource(resource.NewWithAttributes(
+			"service.name", "go-api",
+			attribute.String("environment", "dev"),
+		)),
+	)
+	defer func() { _ = tp.Shutdown(ctx) }()
+	otel.SetTracerProvider(tp)
+
 	srv := h.NewServer(store)
-	log.Fatal(http.ListenAndServe(":"+port, srv.Router()))
+	handler := otelhttp.NewHandler(srv.Router(), "go-api")
+	log.Fatal(http.ListenAndServe(":"+port, handler))
 }

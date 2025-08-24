@@ -1,0 +1,14 @@
+receivers:
+  otlp:
+    protocols:
+      http:
+exporters:
+  logging:
+    loglevel: debug
+  otlp:
+    endpoint: "grafana:4317"
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      exporters: [logging]

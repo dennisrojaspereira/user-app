@@ -1,0 +1,39 @@
+{
+  "id": null,
+  "title": "User Login Board",
+  "tags": ["user", "login"],
+  "timezone": "browser",
+  "schemaVersion": 38,
+  "version": 1,
+  "refresh": "5s",
+  "panels": [
+    {
+      "type": "table",
+      "title": "Recent User Logins",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "user_login_total",
+          "format": "table"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {"x":0,"y":0,"w":24,"h":8}
+    },
+    {
+      "type": "graph",
+      "title": "User Login Rate",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "rate(user_login_total[5m])",
+          "format": "time_series"
+        }
+      ],
+      "gridPos": {"x":0,"y":8,"w":24,"h":8}
+    }
+  ]
+}
