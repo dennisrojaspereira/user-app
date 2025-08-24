@@ -7,8 +7,16 @@ exporters:
     loglevel: debug
   otlp:
     endpoint: "grafana:4317"
+  prometheus:
+    endpoint: "0.0.0.0:8889"
+  elasticsearch:
+    endpoints: ["http://elasticsearch:9200"]
+    index: "otel-metrics"
 service:
   pipelines:
     traces:
       receivers: [otlp]
-      exporters: [logging]
+      exporters: [logging, elasticsearch]
+    metrics:
+      receivers: [otlp]
+      exporters: [prometheus, elasticsearch]
