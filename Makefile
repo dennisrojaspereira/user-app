@@ -15,3 +15,9 @@ coverage-go:
 
 coverage-swift:
 	cd Sources/CreateUser && swift test --enable-code-coverage && cd ../../ && xcrun llvm-cov show .build/debug/CreateUserPackageTests.xctest/Contents/MacOS/CreateUserPackageTests -instr-profile .build/debug/codecov/default.profdata > swift-coverage.txt
+
+spring-api:
+	cd spring-api && ./mvnw spring-boot:run
+
+spring-api-test:
+	cd spring-api && ./mvnw test

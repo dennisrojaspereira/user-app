@@ -2,6 +2,7 @@
 
 ## Project Structure
 - Go API in `go-api/` (with unit tests, Dockerfile, and docker-compose)
+- Spring Boot microservice in `spring-api/` (with unit tests, Dockerfile, and docker-compose)
 
 ## How to start the Go application
 
@@ -60,4 +61,26 @@ docker-build:
 docker-run:
 	cd go-api && docker compose up --build
 ```
+
+## Spring Boot microservice
+A new microservice in `spring-api` listens to Kafka for user login events, sends an email, and stores the event in MongoDB.
+
+### How to run
+1. Configure Kafka, MongoDB, and SMTP in `spring-api/src/main/resources/application.yml`.
+2. Start the service:
+   ```bash
+   make spring-api
+   ```
+
+### How to test
+```bash
+make spring-api-test
+```
+
+### Environment variables
+- `KAFKA_BOOTSTRAP_SERVERS`
+- `MONGODB_URI`
+- `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`
+
+---
 
