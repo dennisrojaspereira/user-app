@@ -1,67 +1,63 @@
 # User App - Go API
 
-## Estrutura do Projeto
-- API Go em `go-api/` (com testes unitários, Dockerfile e docker-compose)
+## Project Structure
+- Go API in `go-api/` (with unit tests, Dockerfile, and docker-compose)
 
-## Como subir a aplicação Go
+## How to start the Go application
 
-### Usando Docker Compose
+### Using Docker Compose
 ```bash
 cd go-api
 docker compose up --build
 ```
-A API estará disponível em: http://localhost:8080
+The API will be available at: http://localhost:8080
 
-### Usando Makefile
+### Using Makefile
 ```bash
 make run
 ```
 
-## Como rodar os testes Go
+## How to run Go tests
 ```bash
 make test
 ```
 
-## Endpoints principais
+## Main Endpoints
 - `POST /users`  `{ "name": "...", "email": "..." }`
 - `GET /users`
 - `GET /users/{id}`
 - `GET /health`
 
+## Requirements
+- Go installed
+- Docker installed
 
-## Requisitos
-- Go instalado
-- Docker instalado
-
-## Banco de dados Postgres
-Ao subir o projeto, crie a tabela de usuários no banco Postgres:
+## Postgres Database
+When starting the project, create the users table in Postgres:
 
 ```sql
 CREATE TABLE users (
-	id SERIAL PRIMARY KEY,
-	name TEXT NOT NULL,
-	email TEXT NOT NULL
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+    email TEXT NOT NULL
 );
 ```
 
 ---
 
-test:
-docker-build:
-docker-run:
-# Makefile exemplo
+# Makefile example
 
 ```makefile
 run:
 	cd go-api && go run main.go
 
-
+test:
 	cd go-api && go test ./...
 
 docker-build:
 	cd go-api && docker build -f Dockerfile -t go-api .
 
-
+docker-run:
 	cd go-api && docker compose up --build
 ```
 
